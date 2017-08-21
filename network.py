@@ -4,6 +4,11 @@ import matplotlib.pylab as plt
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+def softmax(a):
+    c = np.max(a)
+    y = np.exp(a - c) / np.sum(np.exp(a - c))
+    return y
+
 def identity_function(x):
     return x
 
@@ -34,3 +39,6 @@ network = init_network()
 x = np.array([1.0, 0.5])
 y = forword(network, x)
 print(y)
+
+a = np.array([1010, 1000, 990])
+print(softmax(a))
