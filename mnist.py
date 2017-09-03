@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import pickle
 from common.functions import sigmoid,softmax
-
+import time
 
 def image_show(img):
     pil_img = Image.fromarray(np.uint8(img))
@@ -50,10 +50,25 @@ def predict(network, x):
 network = init_network()
 
 accuracy_cnt = 0
+s_time = time.time()
 for i in range(len(x_test)):
     y = predict(network, x_test[i])
     p = np.argmax(y)
     if p == t_test[i]:
         accuracy_cnt += 1
+print(time.time() - s_time) # 0.3763101100921631 sec
 
 print("Accuracy:" + str(float(accuracy_cnt) / len(x_test)))
+
+# Batch
+batch_size = 100
+accuracy_cnt = 0
+s_time = time.time()
+for i in range(0, len(x_test), batch_size):
+    x_batch = x_test[i:i+batch_size]
+    y_batch = predict(network, x_batch)
+    p = np.argmax(y_batch, axis=1)
+    accuracy_cnt += np.sum(p == t_test[i:i+batch_size])
+print(time.time() - s_time) # 0.060408830642700195 sec (batch faster)
+
+print("Accuracy(Batch):" + str(float(accuracy_cnt) / len(x_test)))
